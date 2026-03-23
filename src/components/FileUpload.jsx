@@ -1,8 +1,38 @@
 import { useState } from "react";
+import { uploadAPI } from "../lib/api";
 
 export default function FileUpload() {
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState(null); // 'success' | 'error'
+  const [statusMsg, setStatusMsg] = useState("");
+
+  const doUpload = async (file) => {
+    if (!file) return;
+    setFileName(file.name);
+    setIsUploading(true);
+    setUploadStatus(null);
+
+    const isLoggedIn = !!localStorage.getItem("token");
+    if (!isLoggedIn) {
+      setUploadStatus("error");
+      setStatusMsg("Please log in to upload files.");
+      setIsUploading(false);
+      return;
+    }
+
+    try {
+      const { data } = await uploadAPI.uploadFile(file);
+      setUploadStatus("success");
+      setStatusMsg(`✓ Uploaded: ${data.file.originalName}`);
+    } catch (err) {
+      setUploadStatus("error");
+      setStatusMsg(err.response?.data?.message || "Upload failed. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -15,19 +45,22 @@ export default function FileUpload() {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file) setFileName(file.name);
+    if (file) doUpload(file);
   };
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
-    if (file) setFileName(file.name);
+    if (file) doUpload(file);
   };
+
+  const statusColor =
+    uploadStatus === "success" ? "var(--accent-green)" : "#ef4444";
 
   return (
     <div
       className="glass-card mt-4 transition-all duration-300"
       style={{
-        padding: "20px",
+        padding: "24px",
         border: isDragging
           ? "2px dashed var(--accent-purple)"
           : "1px solid var(--border-subtle)",
@@ -50,25 +83,32 @@ export default function FileUpload() {
             border: "1px solid rgba(139, 92, 246, 0.15)",
           }}
         >
-          📎
+          {isUploading ? "⏳" : "📎"}
         </div>
 
-        {fileName ? (
+        {statusMsg ? (
           <div className="text-center">
-            <p className="text-sm font-medium" style={{ color: "var(--accent-green)" }}>
-              ✓ {fileName}
+            <p className="text-sm font-medium" style={{ color: statusColor }}>
+              {statusMsg}
             </p>
             <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
-              Click or drag to replace
+              Click or drag to upload another
+            </p>
+          </div>
+        ) : isUploading ? (
+          <div className="text-center">
+            <p className="text-sm font-medium" style={{ color: "var(--accent-purple)" }}>
+              Uploading {fileName}...
             </p>
           </div>
         ) : (
           <div className="text-center">
             <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-              Drop study files here or <span style={{ color: "var(--accent-purple)" }}>browse</span>
+              Drop study files here or{" "}
+              <span style={{ color: "var(--accent-purple)" }}>browse</span>
             </p>
             <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
-              PDF, DOCX, TXT, Images
+              PDF, DOCX, TXT, Images — max 10MB
             </p>
           </div>
         )}
@@ -79,7 +119,7 @@ export default function FileUpload() {
               key={type}
               className="text-xs px-2 py-0.5 rounded-md"
               style={{
-                background: "rgba(255, 255, 255, 0.04)",
+                background: "rgba(255, 255, 255, 0.03)",
                 color: "var(--text-muted)",
                 border: "1px solid var(--border-subtle)",
               }}
@@ -96,6 +136,7 @@ export default function FileUpload() {
         className="hidden"
         onChange={handleFileSelect}
         accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
+        disabled={isUploading}
       />
     </div>
   );

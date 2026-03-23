@@ -1,34 +1,7 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import GlowingEffect from "../components/GlowingEffect";
-
-const metrics = [
-  {
-    icon: "⏱️",
-    label: "Study Hours",
-    value: "24.5",
-    unit: "hrs this week",
-    color: "var(--accent-blue)",
-    trend: "+3.2h",
-    trendUp: true,
-  },
-  {
-    icon: "✅",
-    label: "Tasks Done",
-    value: "18",
-    unit: "of 25 tasks",
-    color: "var(--accent-green)",
-    trend: "+5",
-    trendUp: true,
-  },
-  {
-    icon: "🤖",
-    label: "AI Doubts",
-    value: "42",
-    unit: "questions asked",
-    color: "var(--accent-purple)",
-    trend: "+12",
-    trendUp: true,
-  },
-];
+import { progressAPI } from "../lib/api";
 
 const quickActions = [
   { icon: "💬", label: "Start Chat", desc: "Ask AI a question" },
@@ -37,12 +10,74 @@ const quickActions = [
 ];
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  
+  const [stats, setStats] = useState({
+    totalStudyHours: "0.0",
+    completedTopics: 0,
+    totalQuestionsAsked: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  const user = (() => {
+    try { return JSON.parse(localStorage.getItem("user")) || null; } catch { return null; }
+  })();
+  const firstName = user?.name?.split(" ")[0] || "Student";
+
+  useEffect(() => {
+    const fetchDashData = async () => {
+      try {
+        const { data } = await progressAPI.getProgress();
+        setStats({
+          totalStudyHours: data.stats.totalStudyHours,
+          completedTopics: data.stats.completedTopics,
+          totalQuestionsAsked: data.totalQuestionsAsked,
+        });
+      } catch (err) {
+        console.error("Failed to load dashboard data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashData();
+  }, []);
+
+  const metrics = [
+    {
+      icon: "⏱️",
+      label: "Study Hours",
+      value: loading ? "..." : stats.totalStudyHours,
+      unit: "hrs total",
+      color: "var(--accent-blue)",
+      trend: "Recent",
+      trendUp: true,
+    },
+    {
+      icon: "✅",
+      label: "Tasks Done",
+      value: loading ? "..." : stats.completedTopics,
+      unit: "topics completed",
+      color: "var(--accent-green)",
+      trend: "Good",
+      trendUp: true,
+    },
+    {
+      icon: "🤖",
+      label: "AI Doubts",
+      value: loading ? "..." : stats.totalQuestionsAsked,
+      unit: "questions asked",
+      color: "var(--accent-purple)",
+      trend: "Active",
+      trendUp: true,
+    },
+  ];
+
   return (
     <div>
       {/* Welcome Section */}
       <div className="mb-8 animate-fade-in-up">
         <h1 className="text-3xl font-bold mb-2">
-          Welcome back, <span className="gradient-text">Student</span> 👋
+          Welcome back, <span className="gradient-text">{firstName}</span> 👋
         </h1>
         <p style={{ color: "var(--text-secondary)" }}>
           Here&apos;s your study overview for this week. Keep up the great work!
@@ -125,7 +160,14 @@ export default function Dashboard() {
               <button
                 id={`action-${action.label.toLowerCase().replace(" ", "-")}`}
                 className="glass-card w-full text-left flex items-center gap-4 transition-all duration-300"
-                style={{ padding: "16px 20px", cursor: "pointer", border: "none" }}
+                style={{ padding: "20px 24px", cursor: "pointer", border: "none" }}
+                onClick={() => {
+                  if (action.label === "Start Chat" || action.label === "Upload Notes") {
+                    navigate("/chat");
+                  } else {
+                    navigate("/progress");
+                  }
+                }}
               >
                 <span className="text-2xl">{action.icon}</span>
                 <div>

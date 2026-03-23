@@ -1,13 +1,42 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const navItems = [
   { path: "/", label: "Dashboard", icon: "📊" },
   { path: "/chat", label: "AI Chat", icon: "💬" },
   { path: "/progress", label: "Progress", icon: "📈" },
+  { path: "/profile", label: "Profile", icon: "👤" },
 ];
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Listen for storage changes when profile is updated
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        setUser(JSON.parse(localStorage.getItem("user")) || null);
+      } catch {
+        setUser(null);
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  // Get initials for avatar
+  const initials = user?.name
+    ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "?";
 
   return (
     <div
@@ -64,7 +93,7 @@ export default function Sidebar() {
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
                   e.currentTarget.style.color = "var(--text-primary)";
                 }
               }}
@@ -91,11 +120,55 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Bottom section */}
-      <div className="p-6">
+      {/* User Section */}
+      <div className="p-4 mx-2 mb-2">
+        <div
+          className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer hover:bg-white/5 transition-colors"
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid var(--border-subtle)",
+          }}
+          onClick={() => navigate("/profile")}
+        >
+          {/* Avatar */}
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
+            style={{
+              background: "linear-gradient(135deg, var(--accent-blue), var(--accent-purple))",
+              color: "white",
+            }}
+          >
+            {initials}
+          </div>
+
+          {/* User info */}
+          <div className="flex-1 min-w-0">
+            <p
+              className="text-sm font-semibold truncate"
+              style={{ color: "var(--text-primary)" }}
+            >
+              {user?.name || "Student"}
+            </p>
+            <p
+              className="text-xs truncate"
+              style={{ color: "var(--text-muted)" }}
+            >
+              {user?.email || ""}
+            </p>
+          </div>
+
+          {/* Settings icon */}
+          <div className="text-lg opacity-60">
+            ⚙️
+          </div>
+        </div>
+      </div>
+
+      {/* Pro Tip */}
+      <div className="px-6 pb-6">
         <div
           className="glass-card p-4 text-center"
-          style={{ background: "rgba(139, 92, 246, 0.06)" }}
+          style={{ background: "rgba(139, 92, 246, 0.04)" }}
         >
           <p
             className="text-xs font-medium mb-1"

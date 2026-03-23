@@ -63,7 +63,7 @@ export default function ChatPage() {
             key={tip}
             className="text-xs px-3 py-1.5 rounded-lg cursor-pointer transition-all duration-200"
             style={{
-              background: "rgba(255, 255, 255, 0.04)",
+              background: "rgba(255, 255, 255, 0.03)",
               color: "var(--text-secondary)",
               border: "1px solid var(--border-subtle)",
             }}
