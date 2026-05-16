@@ -7,10 +7,10 @@ const connectDB = async () => {
 
   const uri = process.env.MONGODB_URI;
 
-  // In production, a missing URI is fatal — do not silently fall back
-  if (!uri && process.env.NODE_ENV === "production") {
-    console.error("❌ MONGODB_URI is not set. Exiting.");
-    process.exit(1);
+  // No URI set — will fall back to in-memory MongoDB below
+  if (!uri) {
+    console.warn("⚠️  No MONGODB_URI set — using in-memory MongoDB (data resets on restart)");
+    console.warn("   👉 Add MONGODB_URI in Render environment variables for persistent storage");
   }
 
   // ── Try connecting to the configured URI ───────────────────────────────────
