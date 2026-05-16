@@ -1,9 +1,10 @@
 import axios from "axios";
 
-// In dev: VITE_API_URL is empty → uses Vite proxy → hits localhost:5000
-// In prod: VITE_API_URL = "https://your-backend.onrender.com" (set in Vercel env vars)
+// Hardcoded to point directly to Render backend (bypasses Vercel env var issues)
+const BACKEND_URL = "https://ai-study-helper-backend-17c5.onrender.com";
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : "/api",
+  baseURL: `${BACKEND_URL}/api`,
   headers: { "Content-Type": "application/json" },
 });
 
