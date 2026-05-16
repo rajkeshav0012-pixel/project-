@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Hardcoded to point directly to Render backend (bypasses Vercel env var issues)
-const BACKEND_URL = "https://ai-study-helper-backend-17c5.onrender.com";
+export const BACKEND_URL = "https://ai-study-helper-backend-17c5.onrender.com";
 
 const api = axios.create({
   baseURL: `${BACKEND_URL}/api`,
@@ -68,5 +68,11 @@ export const progressAPI = {
   addSubject: (data) => api.post("/progress/subject", data),
   removeSubject: (subject) => api.delete(`/progress/subject/${subject}`),
 };
+
+// ── AI ────────────────────────────────────────────────────────────────
+export const aiAPI = {
+  chat: (messages) => api.post("/ai", { messages }),
+};
+
 
 export default api;

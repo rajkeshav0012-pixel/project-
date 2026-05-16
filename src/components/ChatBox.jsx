@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { aiAPI } from "../lib/api";
 
 const SYSTEM_PROMPT = `You are an AI study assistant. Help students understand concepts clearly and solve problems step by step. Keep your answers concise, educational, and strictly formatted in clean markdown without any HTML. Use emojis occasionally 🎓`;
 
@@ -38,24 +39,15 @@ export default function ChatBox() {
           })),
       ];
 
-      // Call our local backend proxy → it calls Google Gemini server-side (no CORS)
-      const res = await fetch("/api/ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: aiMessages }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || "AI service error");
-
-      setMessages((prev) => [...prev, { role: "ai", text: data.reply }]);
+      // Call our backend AI service
+      const res = await aiAPI.chat(aiMessages);
+      setMessages((prev) => [...prev, { role: "ai", text: res.data.reply }]);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
         {
           role: "ai",
-          text: `⚠️ ${err.message}\n\nMake sure the backend server is running:\n cd backend && npm run dev`,
+          text: `⚠️ ${err.response?.data?.message || err.message}\n\nPlease refresh or try again later.`,
         },
       ]);
     } finally {
