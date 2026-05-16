@@ -93,7 +93,7 @@ export default function Sidebar() {
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                  e.currentTarget.style.background = "rgba(0, 0, 0,0.03)";
                   e.currentTarget.style.color = "var(--text-primary)";
                 }
               }}
@@ -125,7 +125,7 @@ export default function Sidebar() {
         <div
           className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer hover:bg-white/5 transition-colors"
           style={{
-            background: "rgba(255,255,255,0.03)",
+            background: "rgba(0, 0, 0,0.03)",
             border: "1px solid var(--border-subtle)",
           }}
           onClick={() => navigate("/profile")}

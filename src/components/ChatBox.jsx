@@ -27,16 +27,18 @@ export default function ChatBox() {
     setIsTyping(true);
 
     try {
-      // Build message list for the AI
+      // Build message list for the AI (include system prompt, exclude welcome message)
       const aiMessages = [
         { role: "system", content: SYSTEM_PROMPT },
-        ...updatedMessages.map((m) => ({
-          role: m.role === "ai" ? "assistant" : "user",
-          content: m.text,
-        })),
+        ...updatedMessages
+          .filter((m) => m.role !== "ai" || m.text !== WELCOME_MSG.text)
+          .map((m) => ({
+            role: m.role === "ai" ? "assistant" : "user",
+            content: m.text,
+          })),
       ];
 
-      // Call our local backend proxy → it calls Pollinations.ai server-side (no CORS)
+      // Call our local backend proxy → it calls Google Gemini server-side (no CORS)
       const res = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -53,7 +55,7 @@ export default function ChatBox() {
         ...prev,
         {
           role: "ai",
-          text: `⚠️ ${err.message}\n\nMake sure the backend server is running:\n cd backend && node server.js`,
+          text: `⚠️ ${err.message}\n\nMake sure the backend server is running:\n cd backend && npm run dev`,
         },
       ]);
     } finally {
@@ -91,10 +93,7 @@ export default function ChatBox() {
           </div>
           <div>
             <h3 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>
-              AI Assistant{" "}
-              <span className="text-xs font-normal" style={{ color: "var(--text-muted)" }}>
-                (Free · No key needed)
-              </span>
+              AI Assistant
             </h3>
             <div className="flex items-center gap-1.5">
               <div
@@ -114,7 +113,7 @@ export default function ChatBox() {
           onClick={clearChat}
           className="text-xs px-2 py-1 rounded-lg transition-all duration-200"
           style={{
-            background: "rgba(255,255,255,0.03)",
+            background: "rgba(0, 0, 0,0.03)",
             border: "1px solid var(--border-subtle)",
             color: "var(--text-muted)",
             cursor: "pointer",
@@ -148,7 +147,7 @@ export default function ChatBox() {
                 background:
                   msg.role === "user"
                     ? "linear-gradient(135deg, var(--accent-blue), var(--accent-purple))"
-                    : "rgba(255, 255, 255, 0.03)",
+                    : "rgba(0, 0, 0, 0.03)",
                 color: msg.role === "user" ? "white" : "var(--text-primary)",
                 border: msg.role === "ai" ? "1px solid var(--border-subtle)" : "none",
                 borderBottomRightRadius: msg.role === "user" ? "4px" : undefined,
@@ -167,7 +166,7 @@ export default function ChatBox() {
             <div
               className="rounded-2xl px-4 py-3 flex items-center gap-1.5"
               style={{
-                background: "rgba(255, 255, 255, 0.03)",
+                background: "rgba(0, 0, 0, 0.03)",
                 border: "1px solid var(--border-subtle)",
                 borderBottomLeftRadius: "4px",
               }}

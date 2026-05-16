@@ -119,7 +119,7 @@ export default function FileUpload() {
               key={type}
               className="text-xs px-2 py-0.5 rounded-md"
               style={{
-                background: "rgba(255, 255, 255, 0.03)",
+                background: "rgba(0, 0, 0, 0.03)",
                 color: "var(--text-muted)",
                 border: "1px solid var(--border-subtle)",
               }}

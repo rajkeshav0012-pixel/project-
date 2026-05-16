@@ -122,6 +122,7 @@ export default function RegisterPage() {
                       placeholder="Keshav Raj"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
+                      autoComplete="name"
                       required
                     />
                   </div>
@@ -151,6 +152,7 @@ export default function RegisterPage() {
                       placeholder="you@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="username"
                       required
                     />
                   </div>
@@ -180,6 +182,7 @@ export default function RegisterPage() {
                       placeholder="Create a strong password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="new-password"
                       required
                     />
                     <button
@@ -200,7 +203,7 @@ export default function RegisterPage() {
                     <div className="mt-2">
                       <div
                         className="h-1.5 rounded-full overflow-hidden"
-                        style={{ background: "rgba(255,255,255,0.05)" }}
+                        style={{ background: "rgba(0, 0, 0,0.05)" }}
                       >
                         <div
                           className="h-full rounded-full transition-all duration-500"
@@ -250,6 +253,7 @@ export default function RegisterPage() {
                       placeholder="Re-enter your password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
+                      autoComplete="new-password"
                       required
                     />
                     {confirmPassword && confirmPassword === password && (
@@ -325,58 +329,7 @@ export default function RegisterPage() {
                 </button>
               </form>
 
-              {/* Divider */}
-              <div className="flex items-center gap-4 my-6">
-                <div className="flex-1 h-px" style={{ background: "var(--border-subtle)" }} />
-                <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-                  or sign up with
-                </span>
-                <div className="flex-1 h-px" style={{ background: "var(--border-subtle)" }} />
-              </div>
 
-              {/* Social Register */}
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  id="register-google-btn"
-                  className="flex items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300 cursor-pointer"
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid var(--border-subtle)",
-                    color: "var(--text-secondary)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "var(--border-subtle)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                  }}
-                >
-                  <span>🔴</span>
-                  <span className="text-sm font-medium">Google</span>
-                </button>
-                <button
-                  id="register-github-btn"
-                  className="flex items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300 cursor-pointer"
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid var(--border-subtle)",
-                    color: "var(--text-secondary)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "var(--border-subtle)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                  }}
-                >
-                  <span>⚫</span>
-                  <span className="text-sm font-medium">GitHub</span>
-                </button>
-              </div>
             </div>
           </GlowingEffect>
         </div>

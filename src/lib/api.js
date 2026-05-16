@@ -1,7 +1,9 @@
 import axios from "axios";
 
+// In dev: VITE_API_URL is empty → uses Vite proxy → hits localhost:5000
+// In prod: VITE_API_URL = "https://your-backend.onrender.com" (set in Vercel env vars)
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : "/api",
   headers: { "Content-Type": "application/json" },
 });
 

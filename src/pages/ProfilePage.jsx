@@ -94,7 +94,7 @@ export default function ProfilePage() {
                 <div
                   className="w-full px-4 py-3 rounded-xl border text-sm"
                   style={{
-                    background: "rgba(255, 255, 255, 0.05)",
+                    background: "rgba(0, 0, 0, 0.05)",
                     borderColor: "var(--border-subtle)",
                     color: "var(--text-muted)",
                   }}

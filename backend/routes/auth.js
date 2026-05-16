@@ -27,8 +27,12 @@ router.post("/register", async (req, res) => {
 
     const user = await User.create({ name, email, password });
 
-    // Create default progress record for the new user
-    await Progress.create({ userId: user._id });
+    // Create default progress record — non-fatal if it fails
+    try {
+      await Progress.create({ userId: user._id });
+    } catch (progressErr) {
+      console.warn("⚠️  Could not create progress record:", progressErr.message);
+    }
 
     const token = generateToken(user._id);
 
@@ -37,8 +41,11 @@ router.post("/register", async (req, res) => {
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (err) {
-    console.error("Register error:", err);
-    res.status(500).json({ message: "Server error during registration" });
+    console.error("Register error:", err.name, err.message);
+    if (err.code === 11000) {
+      return res.status(409).json({ message: "Email already in use" });
+    }
+    res.status(500).json({ message: err.message || "Server error during registration" });
   }
 });
 

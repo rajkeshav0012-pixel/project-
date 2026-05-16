@@ -30,21 +30,22 @@ router.post("/", async (req, res) => {
     let aiReply;
 
     try {
-      // Call Pollinations.ai — completely free, no API key required
-      const response = await fetch("https://text.pollinations.ai/", {
+      // Call api.airforce proxy — completely free, no API key required
+      const response = await fetch("https://api.airforce/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: aiMessages,
-          model: "openai",
+          model: "gpt-3.5-turbo",
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`Pollinations returned ${response.status}`);
+        throw new Error(`API returned ${response.status}`);
       }
 
-      aiReply = (await response.text()).trim();
+      const data = await response.json();
+      aiReply = data.choices?.[0]?.message?.content || "No response received.";
     } catch (aiError) {
       console.error("Free AI error:", aiError.message);
       aiReply = `⚠️ AI service temporarily unavailable. Please try again in a moment.`;

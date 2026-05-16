@@ -104,6 +104,7 @@ export default function LoginPage() {
                       placeholder="you@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="username"
                       required
                     />
                   </div>
@@ -133,6 +134,7 @@ export default function LoginPage() {
                       placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="current-password"
                       required
                     />
                     <button
@@ -208,58 +210,7 @@ export default function LoginPage() {
                 </button>
               </form>
 
-              {/* Divider */}
-              <div className="flex items-center gap-4 my-6">
-                <div className="flex-1 h-px" style={{ background: "var(--border-subtle)" }} />
-                <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-                  or continue with
-                </span>
-                <div className="flex-1 h-px" style={{ background: "var(--border-subtle)" }} />
-              </div>
 
-              {/* Social Login */}
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  id="login-google-btn"
-                  className="flex items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300 cursor-pointer"
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid var(--border-subtle)",
-                    color: "var(--text-secondary)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "var(--border-subtle)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                  }}
-                >
-                  <span>🔴</span>
-                  <span className="text-sm font-medium">Google</span>
-                </button>
-                <button
-                  id="login-github-btn"
-                  className="flex items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300 cursor-pointer"
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid var(--border-subtle)",
-                    color: "var(--text-secondary)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "var(--border-subtle)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                  }}
-                >
-                  <span>⚫</span>
-                  <span className="text-sm font-medium">GitHub</span>
-                </button>
-              </div>
             </div>
           </GlowingEffect>
         </div>

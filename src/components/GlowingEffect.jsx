@@ -24,9 +24,9 @@ export function GlowingEffect({
   const getVariantColors = useCallback(() => {
     if (variant === "white") {
       return [
-        "rgba(255,255,255,0.9)",
+        "rgba(0, 0, 0,0.9)",
         "rgba(200,200,220,0.7)",
-        "rgba(255,255,255,0.5)",
+        "rgba(0, 0, 0,0.5)",
         "transparent",
       ];
     }
